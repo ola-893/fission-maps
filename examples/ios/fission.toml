@@ -1,0 +1,5 @@
+[[native.modules]]
+name = "fission-maps"
+
+[native.modules.ios]
+linked_frameworks = ["MapKit.framework", "CoreLocation.framework"]
