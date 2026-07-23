@@ -48,11 +48,23 @@ Keep a `MapStateStore` in application state, implement `HasMapState`, and call
 same store so `MapSetCenter` and `MapSetZoom` update MapKit without reintroducing
 map state to Fission core.
 
+## Native-surface handler
+
+`MapKitSurfaceHandler` owns only the `fission-maps` custom payload. On macOS it
+parents `MKMapView` inside the AppKit content view; on iOS it uses the UIKit
+content view. It creates and detaches views as the Fission layout changes,
+updates their frames, and links both MapKit and CoreLocation on macOS.
+
+Enable the `native-surface-hook` feature and register one handler with the
+application's `MapStateStore` using the shell's
+`with_native_surface_handler` builder method.
+
 ## Release dependency
 
 Published `fission-shell` 0.9.1 still has no generic
-`NativeSurfaceHandler`/`NativeSurfaceFrame` API. The MapKit host adapter cannot
-be built or registered until the upstream hook commit is merged and released.
-Using a local Fission path or Git pin to bypass that condition would violate
-this crate's published-dependency contract, so this repository intentionally
-does not do so.
+`NativeSurfaceHandler`/`NativeSurfaceFrame` API. The handler is implemented and
+is compile-tested against the upstream hook, but cannot be enabled by a
+published `fission-maps` release until that hook is merged and released. Using a
+local Fission path or Git pin to bypass that condition would violate this
+crate's published-dependency contract, so this repository intentionally does
+not do so.

@@ -1,3 +1,5 @@
+#![allow(unexpected_cfgs)] // `objc` 0.2 probes its removed `cargo-clippy` feature.
+
 //! Native MapKit maps for Fission applications on macOS and iOS.
 //!
 //! The core widget and action APIs use the published Fission 0.9.0 crates.
@@ -16,6 +18,22 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 const MAP_PAYLOAD_MAGIC: &[u8] = b"fission-maps\0v1";
+
+#[cfg(all(
+    feature = "native-surface-hook",
+    any(target_os = "macos", target_os = "ios")
+))]
+mod mapkit_handler;
+
+/// The Apple MapKit implementation of Fission's native-surface extension.
+///
+/// Register this with `WinitApp::with_native_surface_handler` (or the desktop
+/// or mobile wrapper) after the native-surface hook is released by Fission.
+#[cfg(all(
+    feature = "native-surface-hook",
+    any(target_os = "macos", target_os = "ios")
+))]
+pub use mapkit_handler::MapKitSurfaceHandler;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MapSetCenter {
@@ -214,6 +232,18 @@ struct MapPayload {
     interactive: bool,
 }
 
+#[cfg(any(test, feature = "native-surface-hook"))]
+impl MapPayload {
+    fn initial_state(&self) -> MapRuntimeState {
+        MapRuntimeState {
+            center: self.center,
+            zoom: self.zoom,
+            show_user_location: self.show_user_location,
+            interactive: self.interactive,
+        }
+    }
+}
+
 fn encode_payload(map: &Map) -> Vec<u8> {
     let payload = MapPayload {
         center: map.center,
@@ -224,6 +254,18 @@ fn encode_payload(map: &Map) -> Vec<u8> {
     let mut bytes = MAP_PAYLOAD_MAGIC.to_vec();
     bytes.extend(bincode::serialize(&payload).expect("Map payload serialization is infallible"));
     bytes
+}
+
+#[cfg(any(test, feature = "native-surface-hook"))]
+fn decode_payload(payload: &[u8]) -> Option<MapPayload> {
+    payload
+        .strip_prefix(MAP_PAYLOAD_MAGIC)
+        .and_then(|payload| bincode::deserialize(payload).ok())
+}
+
+#[cfg(any(test, feature = "native-surface-hook"))]
+fn is_map_payload(payload: &[u8]) -> bool {
+    decode_payload(payload).is_some()
 }
 
 #[derive(Debug)]
@@ -325,5 +367,27 @@ mod tests {
             &node.op,
             Op::Layout(LayoutOp::Embed { kind: EmbedKind::Custom(payload), .. }) if payload.starts_with(MAP_PAYLOAD_MAGIC)
         )));
+    }
+
+    #[test]
+    fn map_payload_has_a_stable_type_marker_and_round_trips() {
+        let map = Map {
+            center: (6.5244, 3.3792),
+            zoom: 12.0,
+            show_user_location: true,
+            interactive: false,
+            ..Default::default()
+        };
+        let payload = encode_payload(&map);
+        assert!(is_map_payload(&payload));
+        assert_eq!(
+            decode_payload(&payload).unwrap().initial_state(),
+            MapRuntimeState {
+                center: map.center,
+                zoom: map.zoom,
+                show_user_location: map.show_user_location,
+                interactive: map.interactive,
+            }
+        );
     }
 }

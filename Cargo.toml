@@ -23,10 +23,14 @@ serde = { version = "1", features = ["derive"] }
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.25"
 core-graphics = "0.23"
+fission-render = "0.9.0"
 objc = "0.2"
+raw-window-handle = "0.6"
 
 [workspace]
 
 [target.'cfg(target_os = "ios")'.dependencies]
 core-graphics = "0.23"
+fission-render = "0.9.0"
 objc = "0.2"
+raw-window-handle = "0.6"
