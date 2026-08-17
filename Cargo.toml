@@ -1,6 +1,6 @@
 [package]
 name = "fission-maps"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 rust-version = "1.85"
 description = "Native MapKit maps for Fission applications on macOS and iOS"
@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/ola-893/fission-maps"
 readme = "README.md"
 categories = ["gui", "rendering", "visualization", "wasm", "web-programming"]
-keywords = ["fission", "maps", "mapkit", "gui", "ui"]
+keywords = ["fission-framework", "fission", "maps", "mapkit", "gui"]
 
 [package.metadata.fission]
 platforms = ["macos", "ios"]
