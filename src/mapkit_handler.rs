@@ -127,12 +127,17 @@ mod platform {
 
         fn attach_host(&mut self, host: NativeSurfaceHost) {
             self.detach_all();
-            self.host_view = match host.raw_window_handle() {
+            self.host_view = match host.window_handle().as_raw() {
                 RawWindowHandle::AppKit(handle) => {
                     Some(unsafe { RetainedId::retain(handle.ns_view.as_ptr() as id) })
                 }
                 _ => None,
             };
+        }
+
+        fn detach_host(&mut self) {
+            self.detach_all();
+            self.host_view = None;
         }
 
         fn present_surfaces(&mut self, frames: &[NativeSurfaceFrame]) {
@@ -353,12 +358,17 @@ mod platform {
 
         fn attach_host(&mut self, host: NativeSurfaceHost) {
             self.detach_all();
-            self.host_view = match host.raw_window_handle() {
+            self.host_view = match host.window_handle().as_raw() {
                 RawWindowHandle::UiKit(handle) => {
                     Some(unsafe { RetainedId::retain(handle.ui_view.as_ptr() as Id) })
                 }
                 _ => None,
             };
+        }
+
+        fn detach_host(&mut self) {
+            self.detach_all();
+            self.host_view = None;
         }
 
         fn present_surfaces(&mut self, frames: &[NativeSurfaceFrame]) {

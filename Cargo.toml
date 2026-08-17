@@ -1,11 +1,17 @@
 [package]
 name = "fission-maps"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.85"
 description = "Native MapKit maps for Fission applications on macOS and iOS"
 license = "MIT"
 repository = "https://github.com/ola-893/fission-maps"
+readme = "README.md"
+categories = ["gui", "rendering", "science::geo-mapping"]
+keywords = ["fission", "maps", "mapkit", "gui", "ui"]
+
+[package.metadata.fission]
+platforms = ["macos", "ios"]
 
 [features]
 default = []
@@ -27,7 +33,7 @@ fission-render = "0.9.0"
 objc = "0.2"
 raw-window-handle = "0.6"
 
-[workspace]
+
 
 [target.'cfg(target_os = "ios")'.dependencies]
 core-graphics = "0.23"
