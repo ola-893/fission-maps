@@ -1,6 +1,6 @@
 [package]
 name = "fission-maps"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 rust-version = "1.85"
 description = "Native MapKit maps for Fission applications on macOS and iOS"
@@ -11,7 +11,7 @@ categories = ["gui", "rendering", "visualization", "wasm", "web-programming"]
 keywords = ["fission", "maps", "mapkit", "gui", "ui"]
 
 [package.metadata.fission]
-platforms = ["android", "ios", "linux", "macos", "windows", "web", "terminal", "static-site", "ssr"]
+platforms = ["macos", "ios"]
 
 [features]
 default = []
