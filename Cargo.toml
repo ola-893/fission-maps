@@ -7,7 +7,7 @@ description = "Native MapKit maps for Fission applications on macOS and iOS"
 license = "MIT"
 repository = "https://github.com/ola-893/fission-maps"
 readme = "README.md"
-categories = ["gui", "rendering", "science::geo-mapping"]
+categories = ["gui", "rendering"]
 keywords = ["fission", "maps", "mapkit", "gui", "ui"]
 
 [package.metadata.fission]
